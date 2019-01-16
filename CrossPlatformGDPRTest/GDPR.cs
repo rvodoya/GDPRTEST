@@ -15,7 +15,7 @@ using TestContext = NUnit.Framework.TestContext;
 using System.Net;
 using System.Net.Mail;
 
-namespace CrossPlatformGDPRTest
+namespace CrossPlatformCrossPlatformGDPRTest
 {
     [TestClass]
     public class GDPR
