@@ -223,5 +223,69 @@ namespace CrossPlatformGDPRTest
             driver.Close();
             driver.Quit();
         }
+
+        [TestMethod]
+        public void changeLanguageAdmin()
+        {
+            IWebDriver driver = new FirefoxDriver();
+            driver.Manage().Window.Maximize();
+            driver.Navigate().GoToUrl(link);
+
+            Thread.Sleep(3000);
+
+            driver.FindElement(By.XPath("/html/body/app-root/div/app-login/div/div/div/div[4]/form/div[1]/app-input/div/input")).Click();
+            driver.FindElement(By.XPath("/html/body/app-root/div/app-login/div/div/div/div[4]/form/div[1]/app-input/div/input")).SendKeys("root");
+            driver.FindElement(By.XPath("/html/body/app-root/div/app-login/div/div/div/div[4]/form/div[2]/app-input/div/input")).Click();
+            driver.FindElement(By.XPath("/html/body/app-root/div/app-login/div/div/div/div[4]/form/div[2]/app-input/div/input")).SendKeys("password");
+
+
+            driver.FindElement(By.XPath("/html/body/app-root/div/app-login/div/div/div/div[5]/div[1]/app-button/button")).Click();
+            Thread.Sleep(5000);
+
+            driver.FindElement(By.XPath("//div[contains(@class,'organization-container')]/div[2]")).Click();
+            Thread.Sleep(3000);
+
+            driver.FindElement(By.XPath("//div[contains(@class, 'nav-items flex-main-start')]/div[3]")).Click();
+            Thread.Sleep(3000);
+
+            driver.FindElement(By.XPath("//div[contains(@class,'main-container clickable')]/div")).Click();
+            Thread.Sleep(2000);
+
+            driver.FindElement(By.XPath("//span[contains(text(),'Finnish')]")).Click();
+            Thread.Sleep(2000);
+
+            driver.FindElement(By.XPath("//div[contains(@class,'body-wrapper')]/div[1]/div[contains(@class,'content-container ng-star-inserted')]/div/div[contains(@class,'button-container flex-main-end')]/app-button")).Click();
+            Thread.Sleep(2000);
+
+            driver.FindElement(By.XPath("//div[contains(@class,'main-container clickable')]/div")).Click();
+            Thread.Sleep(2000);
+
+            driver.FindElement(By.XPath("//span[contains(text(),'Norja')]")).Click();
+            Thread.Sleep(2000);
+
+            driver.FindElement(By.XPath("//div[contains(@class,'body-wrapper')]/div[1]/div[contains(@class,'content-container ng-star-inserted')]/div/div[contains(@class,'button-container flex-main-end')]/app-button")).Click();
+            Thread.Sleep(2000);
+
+            driver.FindElement(By.XPath("//div[contains(@class,'main-container clickable')]/div")).Click();
+            Thread.Sleep(2000);
+
+            driver.FindElement(By.XPath("//span[contains(text(),'Svensk')]")).Click();
+            Thread.Sleep(2000);
+
+            driver.FindElement(By.XPath("//div[contains(@class,'body-wrapper')]/div[1]/div[contains(@class,'content-container ng-star-inserted')]/div/div[contains(@class,'button-container flex-main-end')]/app-button")).Click();
+            Thread.Sleep(2000);
+
+            driver.FindElement(By.XPath("//div[contains(@class,'main-container clickable')]/div")).Click();
+            Thread.Sleep(2000);
+
+            driver.FindElement(By.XPath("//span[contains(text(),'Engelska')]")).Click();
+            Thread.Sleep(2000);
+
+            driver.FindElement(By.XPath("//div[contains(@class,'body-wrapper')]/div[1]/div[contains(@class,'content-container ng-star-inserted')]/div/div[contains(@class,'button-container flex-main-end')]/app-button")).Click();
+            Thread.Sleep(2000);
+
+            driver.Close();
+            driver.Quit();
+        }
     }
 }
