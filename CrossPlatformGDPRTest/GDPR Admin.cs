@@ -440,7 +440,51 @@ namespace CrossPlatformGDPRTest
             driver.Close();
             driver.Quit();
         }
+                 
+        [TestMethod]
+        public void inactivateConsent()
+        {
+            IWebDriver driver = new FirefoxDriver();
+            driver.Manage().Window.Maximize();
+            driver.Navigate().GoToUrl(link);
 
-        
+            Thread.Sleep(3000);
+
+            driver.FindElement(By.XPath("/html/body/app-root/div/app-login/div/div/div/div[4]/form/div[1]/app-input/div/input")).Click();
+            driver.FindElement(By.XPath("/html/body/app-root/div/app-login/div/div/div/div[4]/form/div[1]/app-input/div/input")).SendKeys("root");
+            driver.FindElement(By.XPath("/html/body/app-root/div/app-login/div/div/div/div[4]/form/div[2]/app-input/div/input")).Click();
+            driver.FindElement(By.XPath("/html/body/app-root/div/app-login/div/div/div/div[4]/form/div[2]/app-input/div/input")).SendKeys("password");
+
+
+            driver.FindElement(By.XPath("/html/body/app-root/div/app-login/div/div/div/div[5]/div[1]/app-button/button")).Click();
+
+            Thread.Sleep(5000);
+
+            driver.FindElement(By.XPath("//div[contains(@class,'organization-container')]/div[2]")).Click();
+
+            Thread.Sleep(2000);
+
+            IList<IWebElement> consentlist = driver.FindElements(By.XPath("//div[contains(@class,'inner-wrapper flex-cross-center')]"));
+            int consent_count = consentlist.Count();            
+            System.Diagnostics.Debug.WriteLine("Consents: " + consent_count);
+
+            Random rnd = new Random();
+            int rndName = rnd.Next(10);
+
+            driver.FindElement(By.XPath("//div[contains(@class,'body-container flex')]/app-tr[" + rndName + "]/div/div/div/app-tc[3]/div")).Click();
+            Thread.Sleep(3000);
+
+            driver.FindElement(By.XPath("//div[contains(@class,'right-content flex-cross-center clickable faded ng-star-inserted')]/div[2]")).Click();
+            Thread.Sleep(2000);
+
+            driver.FindElement(By.XPath("//input[contains(@type,'text')]")).SendKeys("Lorem ipsum dolor sit amet.");
+            driver.FindElement(By.XPath("//div[contains(@class,'checkbox flex-center cboxDanger')]")).Click();
+            Thread.Sleep(2000);
+            driver.FindElement(By.XPath("//app-button/button[contains(@class,'label btnDanger')]")).Click();
+            Thread.Sleep(2000);
+
+            driver.Close();
+            driver.Quit();
+        }
     }
 }
