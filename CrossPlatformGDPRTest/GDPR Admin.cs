@@ -95,19 +95,35 @@ namespace CrossPlatformGDPRTest
             }
             else
             {
-                int wholeNum = consent_count / 10;                             
-                for (int k = 1; k <= 10; k++)
+                int wholeNum = consent_count / 10;
+                try
                 {
-                    driver.FindElement(By.XPath("//div[contains(@class,'body-container flex')]/app-tr[" + k + "]/div/div/div/app-tc[3]/div")).Click();
-                    Thread.Sleep(3000);
-                    driver.FindElement(By.XPath("//div[contains(@class,'left-content flex-cross-center clickable faded')]/div")).Click();               
-                    Thread.Sleep(3000);
+                    for (int k = 1; k <= 10; k++)
+                    {
+                        driver.FindElement(By.XPath("//div[contains(@class,'body-container flex')]/app-tr[" + k + "]/div/div/div/app-tc[3]/div")).Click();
+                        Thread.Sleep(3000);
+                        driver.FindElement(By.XPath("//div[contains(@class,'left-content flex-cross-center clickable faded')]/div")).Click();
+                        Thread.Sleep(3000);
+                    }
                 }
-                for (int j = 1; j <= wholeNum; j++)
+                catch (NoSuchElementException)
                 {
-                    driver.FindElement(By.XPath("//ul[contains(@class,'ngx-pagination ng-star-inserted')]/li[contains(@class,'pagination-next ng-star-inserted')]")).Click();
-                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
+
                 }                
+                try
+                {
+                    driver.FindElement(By.XPath("//div[contains(@class,'pagination-container flex-main-end ng-star-inserted')]"));
+                    Thread.Sleep(2000);
+                    for (int j = 1; j <= wholeNum; j++)
+                    {
+                        driver.FindElement(By.XPath("//ul[contains(@class,'ngx-pagination ng-star-inserted')]/li[contains(@class,'pagination-next ng-star-inserted')]")).Click();
+                        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
+                    }
+                }
+                catch (NoSuchElementException)
+                {
+
+                }                              
                 driver.Close();
                 driver.Quit();
             }
@@ -210,13 +226,24 @@ namespace CrossPlatformGDPRTest
             Thread.Sleep(2000);
 
             Random rnd = new Random();
-            int rndName = rnd.Next(10000);
+            int rndNum = rnd.Next(10000);
 
-            driver.FindElement(By.XPath("//app-input[contains(@formcontrolname, 'id_number')]/div/input")).SendKeys("" + rndName);            
-            driver.FindElement(By.XPath("//app-input[contains(@formcontrolname, 'first_name')]/div/input")).SendKeys("Mark");
+            var rndfirstName = new List<string> {"Mark", "Carlo", "Kim", "Ashe" };
+            var rndlastName = new List<string> {"Larned", "Shu", "Cartwright", "Ketchum" };
+
+            int index = rnd.Next(rndfirstName.Count);
+            int index2 = rnd.Next(rndlastName.Count);
+
+            var firstName = rndfirstName[index];
+            rndfirstName.RemoveAt(index);
+            var lastName = rndlastName[index];
+            rndlastName.RemoveAt(index);
+
+            driver.FindElement(By.XPath("//app-input[contains(@formcontrolname, 'id_number')]/div/input")).SendKeys("" + rndNum);            
+            driver.FindElement(By.XPath("//app-input[contains(@formcontrolname, 'first_name')]/div/input")).SendKeys("" + firstName);
             driver.FindElement(By.XPath("//app-input[contains(@formcontrolname, 'middle_name')]/div/input")).SendKeys("B.");
-            driver.FindElement(By.XPath("//app-input[contains(@formcontrolname, 'last_name')]/div/input")).SendKeys("Twain");
-            driver.FindElement(By.XPath("//app-input[contains(@formcontrolname, 'email_address')]/div/input")).SendKeys("marktwain"+ rndName +"@mail.com");
+            driver.FindElement(By.XPath("//app-input[contains(@formcontrolname, 'last_name')]/div/input")).SendKeys("" + lastName);
+            driver.FindElement(By.XPath("//app-input[contains(@formcontrolname, 'email_address')]/div/input")).SendKeys(""+ firstName + lastName + rndNum +"@mail.com");
             driver.FindElement(By.XPath("//app-input[contains(@formcontrolname, 'mobile_number')]/div/input")).SendKeys("987654321");
 
             driver.FindElement(By.XPath("//button[contains(@class,'label btnPrimary')]")).Click();
@@ -483,6 +510,138 @@ namespace CrossPlatformGDPRTest
             driver.FindElement(By.XPath("//app-button/button[contains(@class,'label btnDanger')]")).Click();
             Thread.Sleep(2000);
 
+            driver.Close();
+            driver.Quit();
+        }
+
+        [TestMethod]
+        public void checkInactivated()
+        {
+            IWebDriver driver = new FirefoxDriver();
+            driver.Manage().Window.Maximize();
+            driver.Navigate().GoToUrl(link);
+
+            Thread.Sleep(3000);
+
+            driver.FindElement(By.XPath("/html/body/app-root/div/app-login/div/div/div/div[4]/form/div[1]/app-input/div/input")).Click();
+            driver.FindElement(By.XPath("/html/body/app-root/div/app-login/div/div/div/div[4]/form/div[1]/app-input/div/input")).SendKeys("root");
+            driver.FindElement(By.XPath("/html/body/app-root/div/app-login/div/div/div/div[4]/form/div[2]/app-input/div/input")).Click();
+            driver.FindElement(By.XPath("/html/body/app-root/div/app-login/div/div/div/div[4]/form/div[2]/app-input/div/input")).SendKeys("password");
+
+
+            driver.FindElement(By.XPath("/html/body/app-root/div/app-login/div/div/div/div[5]/div[1]/app-button/button")).Click();
+
+            Thread.Sleep(5000);
+
+            driver.FindElement(By.XPath("//div[contains(@class,'organization-container')]/div[2]")).Click();
+
+            Thread.Sleep(2000);
+
+            driver.FindElement(By.XPath("//div[contains(@class,'right-content flex-cross-center clickable faded')]/div[1]")).Click();
+            Thread.Sleep(2000);
+
+            IList<IWebElement> consentlist = driver.FindElements(By.XPath("//div[contains(@class,'body-container flex')]/app-tr/div/div/div/app-tc[3]/div"));
+            int consent_count = consentlist.Count();
+            System.Diagnostics.Debug.WriteLine("Consents: " + consent_count);
+
+            if (consent_count == 0)
+            {
+                driver.Close();
+                driver.Quit();
+            }
+            else if (consent_count == 1)
+            {
+                System.Diagnostics.Debug.WriteLine("Consents: " + consent_count);
+                driver.Close();
+                driver.Quit();
+            }
+            else
+            {
+                int wholeNum = consent_count / 10;
+                for (int k = 1; k <= 10; k++)
+                {
+                    try
+                    {
+                        driver.FindElement(By.XPath("//div[contains(@class,'body-container flex')]/app-tr[" + k + "]/div/div/div/app-tc[3]/div")).Click();
+                        Thread.Sleep(3000);
+                        driver.FindElement(By.XPath("//div[contains(@class,'left-content flex-cross-center clickable faded')]/div")).Click();
+                        Thread.Sleep(3000);
+                        driver.FindElement(By.XPath("//div[contains(@class,'right-content flex-cross-center clickable faded')]/div[1]")).Click();
+                        Thread.Sleep(4000);
+                    }
+                    catch (NoSuchElementException)
+                    {
+
+                    }
+                }
+                try
+                {
+                    driver.FindElement(By.XPath("//div[contains(@class,'pagination-container flex-main-end ng-star-inserted')]"));
+                    Thread.Sleep(2000);
+                    for (int j = 1; j <= wholeNum; j++)
+                    {
+                        driver.FindElement(By.XPath("//ul[contains(@class,'ngx-pagination ng-star-inserted')]/li[contains(@class,'pagination-next ng-star-inserted')]")).Click();
+                        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
+                    }
+                }
+                catch (NoSuchElementException)
+                {
+
+                }                
+                driver.Close();
+                driver.Quit();
+            }
+        }
+
+        [TestMethod]
+        public void searchPatient()
+        {
+            IWebDriver driver = new FirefoxDriver();
+            driver.Manage().Window.Maximize();
+            driver.Navigate().GoToUrl(link);
+
+            Thread.Sleep(3000);
+
+            driver.FindElement(By.XPath("/html/body/app-root/div/app-login/div/div/div/div[4]/form/div[1]/app-input/div/input")).Click();
+            driver.FindElement(By.XPath("/html/body/app-root/div/app-login/div/div/div/div[4]/form/div[1]/app-input/div/input")).SendKeys("root");
+            driver.FindElement(By.XPath("/html/body/app-root/div/app-login/div/div/div/div[4]/form/div[2]/app-input/div/input")).Click();
+            driver.FindElement(By.XPath("/html/body/app-root/div/app-login/div/div/div/div[4]/form/div[2]/app-input/div/input")).SendKeys("password");
+
+
+            driver.FindElement(By.XPath("/html/body/app-root/div/app-login/div/div/div/div[5]/div[1]/app-button/button")).Click();
+
+            Thread.Sleep(5000);
+
+            driver.FindElement(By.XPath("//div[contains(@class,'organization-container')]/div[2]")).Click();
+
+            Thread.Sleep(3000);
+
+            driver.FindElement(By.XPath("//div[contains(@class, 'nav-items flex-main-start')]/div[2]")).Click();
+
+            Thread.Sleep(8000);
+
+            Random rnd = new Random();
+            var rndfirstName = new List<string> { "Mark", "Carlo", "Kim", "Ashe" };
+            var rndlastName = new List<string> { "Larned", "Shu", "Cartwright", "Ketchum" };
+
+            int index = rnd.Next(rndfirstName.Count);
+            int index2 = rnd.Next(rndlastName.Count);
+
+            var firstName = rndfirstName[index];
+            rndfirstName.RemoveAt(index);            
+
+            driver.FindElement(By.XPath("//div[contains(@class,'search-container date-to')]/app-searchbar/div/div[2]/input")).SendKeys(""+firstName);
+            Thread.Sleep(2000);
+
+            IList<IWebElement> consentlist = driver.FindElements(By.XPath("//app-tc[contains(@class,'email-cell flex')]"));
+            int consent_count = consentlist.Count();
+            System.Diagnostics.Debug.WriteLine("Consents: " + consent_count);
+
+            if (consent_count > 0)
+            {
+                driver.FindElement(By.XPath("//div[contains(@class,'body-container flex')]/app-tr/div/div/div/app-tc[4]/div")).Click();
+                Thread.Sleep(5000);                
+            }
             driver.Close();
             driver.Quit();
         }
